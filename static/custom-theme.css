@@ -1,25 +1,187 @@
 /* ============================================ */
 /* LlamaVoyage — LlamaTray Midnight theme       */
+/* v1.0.3                                       */
 /* ============================================ */
 /*
  * Voyage's signature palette: deep night purple (obsidian) canvas with a
- * neon violet accent, warm off-white text.
+ * neon violet accent, bright lavender off-white text.
  *
  * Only the five theme-public variables are overridden (see the header of
  * style.css): --bg, --fg, --panel, --border, --red. Syntax highlighting
  * (--hl-*) and the semantic --color-* tokens are left untouched.
  *
- * Cascade position: this file is linked AFTER style.css in index.html, so
- * its :root values replace the One Dark defaults. The runtime theme system
- * (static/js/theme.js) writes the same five variables as inline styles when
- * the user picks a theme in Settings — inline styles win over this file,
- * which is intended: a user-chosen theme always takes precedence.
+ * v1.0.1 — forced: theme.js applies the active preset as INLINE styles on
+ * <html> (even on first run, DEFAULT_THEME='dark'), which would otherwise
+ * win over any stylesheet rule. !important declarations beat non-important
+ * inline styles, so the Voyage identity now holds. Declared at both :root
+ * and html/body as a belt-and-suspenders layer.
+ *
+ * v1.0.2 — LlamaTray glass identity:
+ *   - surfaces (sidebar, modals, dropdowns, cards) become translucent
+ *     glass with a 14px radius, blur and a faint violet border
+ *   - primary buttons move to the LlamaTray violet gradient with a neon
+ *     hover glow
+ *   - soft ambient violet shadows for depth
+ *   - antialiased font rendering
+ * Selectors are deliberately scoped to real Odysseus class names so the
+ * rest of the 41k-line stylesheet is left intact. Chat bubbles (.msg)
+ * only get the softened radius — their backgrounds keep the user/AI
+ * distinction.
+ *
+ * v1.0.3 — coral purge (LlamaTray brand colors):
+ *   - theme.js also writes --brand-color INLINE (default = the theme red,
+ *     #e06c75). .sidebar-brand-title, .welcome-boat and the
+ *     #welcome-screen .welcome-name gradient all resolve through
+ *     var(--brand-color, ...), so forcing --brand-color is the master
+ *     fix for the sidebar brand and the welcome title/logo.
+ *   - explicit brand rules: light-lavender (#a78bfa) brand text with a
+ *     soft violet glow; violet (#8b5cf6) logo fill.
+ *   - catch-all rules to crush remaining literal #e06c75 usages.
  */
 
+/* ── Core palette (forced over theme.js inline styles) ── */
+
 :root {
-  --bg: #0a0812;     /* deep night purple / obsidian canvas */
-  --panel: #151221;  /* panel with a faint violet undertone */
-  --border: #2d2445; /* thin purple/violet glow on borders */
-  --fg: #f2f1ed;     /* warm off-white text */
-  --red: #8b5cf6;    /* LlamaTray neon violet accent (brand) */
+  --bg: #0a0812 !important;     /* deep night purple / obsidian canvas */
+  --panel: #131022 !important;  /* card and sidebar surfaces */
+  --border: #2e2449 !important; /* violet-glow borders */
+  --fg: #f3f0fa !important;     /* bright lavender off-white text */
+  --red: #8b5cf6 !important;    /* LlamaTray neon violet accent (brand) */
+  --brand-color: #8b5cf6 !important; /* sidebar brand, welcome title/logo */
+}
+
+html, body {
+  --bg: #0a0812 !important;
+  --panel: #131022 !important;
+  --border: #2e2449 !important;
+  --fg: #f3f0fa !important;
+  --red: #8b5cf6 !important;
+  --brand-color: #8b5cf6 !important;
+}
+
+/* ── Typography: soft, antialiased rendering ── */
+
+html, body {
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* ── Glass surfaces: cards, panels, popovers ── */
+
+.sidebar,
+.modal,
+.modal-content,
+.dropdown-menu,
+.export-dropdown-menu,
+.adm-provider-menu,
+.admin-card,
+.memory-tab-panel,
+.skills-audit-panel,
+body.login-page .card {
+  border-radius: 14px !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  background: rgba(19, 16, 34, 0.75) !important;
+  border: 1px solid rgba(139, 92, 246, 0.18) !important;
+}
+
+/* Chat bubbles keep their backgrounds (user/AI contrast) but soften corners. */
+.msg,
+.msg-a {
+  border-radius: 14px !important;
+}
+
+/* ── Depth: soft ambient violet shadows ── */
+
+.sidebar,
+.modal,
+.modal-content,
+.dropdown-menu,
+.export-dropdown-menu,
+.adm-provider-menu,
+.admin-card,
+body.login-page .card {
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37),
+              0 0 12px rgba(139, 92, 246, 0.1) !important;
+}
+
+/* ── Primary buttons: LlamaTray violet gradient ── */
+
+.send-btn,
+.confirm-btn-primary,
+#submitBtn {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+  border-radius: 10px !important;
+  color: #ffffff !important;
+  transition: all 0.2s ease !important;
+}
+
+.send-btn:hover,
+.confirm-btn-primary:hover,
+#submitBtn:hover {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.45) !important;
+}
+
+/* ── Soft violet focus glow on inputs and buttons ── */
+
+input:focus,
+textarea:focus,
+button:focus,
+select:focus {
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.25) !important;
+}
+
+/* ── Brand: sidebar mark (text + any inline logo) ──
+   Upstream rule (style.css ~L630): color: var(--brand-color, var(--red)).
+   --brand-color is forced above; the explicit rule pins the lighter
+   LlamaTray lavender for the wordmark text. */
+
+.sidebar-brand-title {
+  color: #a78bfa !important;
+  fill: #8b5cf6 !important;
+}
+
+/* ── Brand: welcome screen title + llama mark ──
+   Upstream rule (style.css ~L2025): gradient text via background-clip and
+   -webkit-text-fill-color: transparent; .welcome-boat (style.css ~L2035)
+   colors the SVG through currentColor. The llama <path>s carry
+   fill="currentColor"; the eye circle carries fill="var(--bg)" and must
+   stay dark, so we drive color, not a blanket fill. */
+
+#welcome-screen .welcome-name {
+  color: #a78bfa !important;
+  background: none !important;
+  -webkit-text-fill-color: #a78bfa !important;
+  text-shadow: 0 0 25px rgba(139, 92, 246, 0.4) !important;
+}
+
+#welcome-screen .welcome-boat {
+  color: #8b5cf6 !important;
+}
+
+#welcome-screen .welcome-boat path[fill="currentColor"] {
+  fill: #8b5cf6 !important;
+}
+
+/* ── Coral purge: crush leftover literal #e06c75 ──
+   Catches inline styles that embed the old coral hex (e.g. the
+   pre-paint loader wave) and SVGs whose fill attribute is literal coral.
+   .text-danger / .coral-text are reserved hooks — no upstream element
+   uses them today, but the rules keep the identity stable if they
+   appear. (Data-URI SVGs embedded in style.css background-image cannot
+   be reached by selectors; see report.) */
+
+[style*="e06c75"],
+.text-danger,
+.coral-text,
+svg[fill="#e06c75"] {
+  color: #8b5cf6 !important;
+  fill: #8b5cf6 !important;
+}
+
+/* ── Login page: vertically centered glass card ── */
+
+body.login-page {
+  align-items: center !important;
+  padding-top: 0 !important;
 }
