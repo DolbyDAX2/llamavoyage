@@ -1,0 +1,25 @@
+/* ============================================ */
+/* LlamaVoyage — LlamaTray Midnight theme       */
+/* ============================================ */
+/*
+ * Voyage's signature palette: deep night purple (obsidian) canvas with a
+ * neon violet accent, warm off-white text.
+ *
+ * Only the five theme-public variables are overridden (see the header of
+ * style.css): --bg, --fg, --panel, --border, --red. Syntax highlighting
+ * (--hl-*) and the semantic --color-* tokens are left untouched.
+ *
+ * Cascade position: this file is linked AFTER style.css in index.html, so
+ * its :root values replace the One Dark defaults. The runtime theme system
+ * (static/js/theme.js) writes the same five variables as inline styles when
+ * the user picks a theme in Settings — inline styles win over this file,
+ * which is intended: a user-chosen theme always takes precedence.
+ */
+
+:root {
+  --bg: #0a0812;     /* deep night purple / obsidian canvas */
+  --panel: #151221;  /* panel with a faint violet undertone */
+  --border: #2d2445; /* thin purple/violet glow on borders */
+  --fg: #f2f1ed;     /* warm off-white text */
+  --red: #8b5cf6;    /* LlamaTray neon violet accent (brand) */
+}
