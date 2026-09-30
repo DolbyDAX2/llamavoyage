@@ -1,6 +1,6 @@
 /* ============================================ */
 /* LlamaVoyage — LlamaTray Midnight theme       */
-/* v1.0.5 "Velvet Obsidian"                     */
+/* v1.0.6                                       */
 /* ============================================ */
 /*
  * Voyage's signature palette: a deep, MAT night (obsidian) canvas with a
@@ -37,6 +37,12 @@
  * and text-shadows are dialed down to ~0.15 alpha; sidebar text is more
  * airy and hover transitions lighter. No icon sizing or shaping rules —
  * icons keep their upstream natural size and flexible alignment.
+ *
+ * v1.0.6 — voice (STT) support: the upstream dual-purpose send/mic button
+ * (app.js ~L3881) wakes up once the STT provider is enabled in Settings.
+ * .mic-mode gets a quiet violet wash; the recording state (the button's
+ * data-mode="recording") breathes with a 1.8s pulse — attention-grabbing
+ * without glare.
  */
 
 /* ── Core palette (forced over theme.js inline styles) ── */
@@ -225,6 +231,36 @@ select:focus {
 svg[fill="#e06c75"] {
   color: #7c5cf6 !important;
   fill: #7c5cf6 !important;
+}
+
+/* ── Voice: mic-mode send button (upstream morphs send → mic when the
+   STT provider is enabled and the input is empty) ── */
+
+.send-btn.mic-mode {
+  background: rgba(124, 92, 246, 0.16) !important;
+  color: #a78bfa !important;
+  border: 1px solid rgba(124, 92, 246, 0.35) !important;
+  box-shadow: 0 0 12px rgba(124, 92, 246, 0.15) !important;
+}
+
+.send-btn.mic-mode:hover {
+  background: rgba(124, 92, 246, 0.26) !important;
+  box-shadow: 0 0 16px rgba(124, 92, 246, 0.25) !important;
+}
+
+/* ── Voice: recording state — calm breathing pulse (1.8s) ──
+   app.js sets sendBtn.dataset.mode = 'recording' while the mic is hot. */
+
+.send-btn[data-mode="recording"] {
+  background: rgba(124, 92, 246, 0.22) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(124, 92, 246, 0.45) !important;
+  animation: lv-rec-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes lv-rec-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(124, 92, 246, 0.15); }
+  50%      { box-shadow: 0 0 20px rgba(124, 92, 246, 0.40); }
 }
 
 /* ── Login page: vertically centered glass card ── */

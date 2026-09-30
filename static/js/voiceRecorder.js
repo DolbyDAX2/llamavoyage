@@ -22,6 +22,7 @@ let _browserTranscript = '';
 
 // Cached STT provider — refreshed on settings change
 let _sttProvider = 'disabled';
+let _sttLanguage = ''; // from /api/stt/stats (Settings → STT language)
 
 /**
  * Fetch current STT provider from server settings
@@ -32,6 +33,7 @@ async function refreshSttProvider() {
     if (res.ok) {
       const stats = await res.json();
       _sttProvider = stats.provider || 'disabled';
+      _sttLanguage = stats.language || '';
       // Notify the send button to update its icon
       if (window._updateSendBtnIcon) window._updateSendBtnIcon();
     }
@@ -80,7 +82,9 @@ function startBrowserSTT() {
   _recognition = new SpeechRecognition();
   _recognition.continuous = true;
   _recognition.interimResults = false;
-  _recognition.lang = '';
+  // Use the configured language (e.g. "tr-TR") so recognition does not
+  // silently fall back to the browser's UI locale. Empty = auto-detect.
+  _recognition.lang = _sttLanguage || '';
 
   _recognition.onresult = (event) => {
     for (let i = event.resultIndex; i < event.results.length; i++) {
